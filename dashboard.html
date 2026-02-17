@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>CREDEX - Dashboard</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBa9BtvZCXTG7W7cgj8_i0q2IuYgU_sYEg",
+            authDomain: "credex-653f1.firebaseapp.com",
+            projectId: "credex-653f1",
+            storageBucket: "credex-653f1.firebasestorage.app",
+            messagingSenderId: "1022903146029",
+            appId: "1:1022903146029:web:57bf20bd079409838ccaa4"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <div class="nav-left">
+            <h1>CREDEX</h1>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <header class="dashboard-header">
+            <h1>CREDEX Dashboard</h1>
+            <div class="user-info">
+                <span id="message">Welcome, <span id="username-display">User</span>!</span>
+                <button onclick="logout()">Logout</button>
+            </div>
+        </header>
+    </div>
+
+    <div class="progress">
+            <div class="progress-card">
+                <h3>Total Credits</h3>
+                <div class="progress-display">
+                <span id="current-credits">0</span> / <span id="goal-credits">60</span>
+                    <div class="progress-bar">
+         \               <div class="progress-fill" id="credit-progress"></div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <div class="chart-section">
+            <h3>Credit Chart</h3>
+            <canvas id="credit-chart"></canvas>
+    </div>
+
+    <button onclick="showAddCreditPopup()" class="btn-add-credit">
+        ✦ Add New Credits ✦
+    </button>
+
+    <div class="subjects-list">
+            <h3>Your Subjects</h3>
+            <div id="subjects-display"></div>
+        </div>
+    </div>
+
+    <div id="add-credit-popup">
+        <div class="popup-content">
+            <h2>Add New Credits</h2>
+            
+            <label>Subject:
+                <select id="subject-select">
+                    <!--JAVASCRIPT-->
+                </select>
+            </label>
+            
+            <label>Credits:
+                <input type="number" id="credit-amount" min="1" max="7" value="4">
+            </label>
+
+            <label>Grade:
+                <select id="grade-select">
+                    <option value="Achieved">Achieved</option>
+                    <option value="Merit">Merit</option>
+                    <option value="Excellence">Excellence</option>
+                </select>
+            </label>
+
+            <div class="popup-buttons">
+                <button onclick="addCredit()"">Add</button>
+                <button onclick="hideAddCreditPopup()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="success-popup" class="popup-overlay">
+        <div class="popup-content success-popup">
+            <div class="confetti-container" id="confetti-container"></div>
+            <h2 id="success-message">4 Excellence credits successfully added!</h2>
+            <div class="success-buttons">
+                <button onclick="addAnotherCredit()" class="btn-secondary">Add More</button>
+                <button onclick="closeSuccessPopup()" class="btn-primary">Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
