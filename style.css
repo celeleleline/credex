@@ -626,32 +626,71 @@ body {
     margin: 10px 0;
 }
 
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+    animation: popup-appear 0.3s ease;
+}
+
+@keyframes popup-appear {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 .success-popup {
-    text-align: center;
     background: linear-gradient(135deg, #9b59b6, #3498db);
     color: white;
-    border: 3px solid white;
+    text-align: center;
 }
 
 .success-popup h2 {
     color: white;
     border-left: none;
     margin: 20px 0;
-    font-size: 24px;
+    font-size: 20px;
+    line-height: 1.4;
 }
 
 .success-buttons {
     display: flex;
     gap: 15px;
-    margin-top: 30px;
+    margin-top: 25px;
     justify-content: center;
 }
 
-.success-buttons .btn-primary,
-.success-buttons .btn-secondary {
-    width: auto;
-    padding: 12px 25px;
-    margin: 0;
+.success-buttons button {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
 .success-buttons .btn-primary {
@@ -665,24 +704,41 @@ body {
     color: white;
 }
 
+.success-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
 .confetti-container {
     position: relative;
-    height: 100px;
-    margin-bottom: 20px;
+    height: 80px;
+    width: 100%;
+    margin: 0 auto 10px;
+    overflow: hidden;
 }
 
 .confetti {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    top: -20px;
+    width: 8px;
+    height: 8px;
     background: white;
     opacity: 0;
-    animation: confetti-fall 3s ease-in-out infinite;
+    animation: confetti-fall 2s ease-out forwards;
 }
 
 @keyframes confetti-fall {
-    0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(100px) rotate(720deg); opacity: 0; }
+    0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(80px) rotate(720deg);
+        opacity: 0;
+    }
 }
 
 #add-credit-popup {

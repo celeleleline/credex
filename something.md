@@ -12,6 +12,7 @@ things {
     also code the forgot password function + CSS
     a help page obviously :(
     the 'your subjects' looks ass
+    -CHANGE THE USERNAME AND PASSWORD TO EMAIL SO IT EMAILS YOU INSTEAD.
 }
 
 settings {
