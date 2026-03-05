@@ -130,45 +130,42 @@
     <div class="popup-content">
         <h2>Settings</h2>
         
-        <div style="max-height: 60vh; overflow-y: auto; padding-right: 10px;">
-            <div class="settings-section">
-                <h3>Background Gradient</h3>
-                <label>Color 1:</label>
-                <input type="color" id="gradient-color1" value="#9b59b6">
-                <label>Color 2:</label>
-                <input type="color" id="gradient-color2" value="#3498db">
-                <button onclick="applyGradient()" class="settings-btn">Apply Gradient</button>
-            </div>
-            
-            <div class="settings-section">
-                <h3>Theme</h3>
-                <button onclick="setTheme('light')" class="theme-btn light-btn">Light Mode</button>
-                <button onclick="setTheme('dark')" class="theme-btn dark-btn">Dark Mode</button>
-            </div>
-            
-            <div class="settings-section">
-                <h3>Credit Goal</h3>
-                <input type="number" id="settings-credit-goal" value="60" min="1" max="100">
-            </div>
-            
-            <div class="settings-section">
-                <h3>Endorsement Goal</h3>
-                <select id="settings-endorsement-goal">
-                    <option value="Achieved">Achieved</option>
-                    <option value="Merit">Merit</option>
-                    <option value="Excellence">Excellence</option>
-                </select>
-            </div>
-            
-            <div class="settings-section">
-                <h3>Account</h3>
-                <button onclick="logout()" class="logout-settings-btn">Logout</button>
-            </div>
+        <div class="settings-section">
+            <h3>Background Gradient</h3>
+            <label>Color 1:</label>
+            <input type="color" id="gradient-color1" value="#9b59b6">
+            <label>Color 2:</label>
+            <input type="color" id="gradient-color2" value="#3498db">
+            <button onclick="applyGradient()" class="settings-btn">Apply Gradient</button>
+        </div>
+        
+        <div class="settings-section">
+            <h3>Theme</h3>
+            <button onclick="setTheme('light')" class="theme-btn light-btn">Light Mode</button>
+            <button onclick="setTheme('dark')" class="theme-btn dark-btn">Dark Mode</button>
+        </div>
+        
+        <div class="settings-section">
+            <h3>Credit Goal</h3>
+            <input type="number" id="settings-credit-goal" value="60" min="1" max="100">
+        </div>
+        
+        <div class="settings-section">
+            <h3>Endorsement Goal</h3>
+            <select id="settings-endorsement-goal">
+                <option value="Achieved">Achieved</option>
+                <option value="Merit">Merit</option>
+                <option value="Excellence">Excellence</option>
+            </select>
+        </div>
+        
+        <div class="settings-section">
+            <h3>Account</h3>
+            <button onclick="logout()" class="logout-settings-btn">Logout</button>
         </div>
         
         <div class="popup-buttons" style="margin-top: 20px;">
-            <button onclick="saveSettings()">Save</button>
-            <button onclick="closeSettings()">Close</button>
+            <button onclick="closeSettings()" style="width: 100%;">Close</button>
         </div>
     </div>
 </div>

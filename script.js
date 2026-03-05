@@ -226,12 +226,12 @@ function loadCredits(userData) {
         progressBar.style.background = '#ecf0f1';
     }
     
-    createOrUpdateChart(userData);
-
     document.getElementById('excellence-total').textContent = excellenceTotal;
     document.getElementById('merit-total').textContent = meritTotal;
     document.getElementById('achieved-total').textContent = achievedTotal;
     document.getElementById('total-credits').textContent = total;
+    
+    createOrUpdateChart(userData);
 }
 
 function toggleSubject(element) {
@@ -295,28 +295,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     loadSavedTheme();
     
-    if (currentUser && isLoginPage) {
-        const fbUser = await getUserFromFirebase(currentUser.username);
-        if (fbUser) {
-            localStorage.setItem('currentUser', JSON.stringify(fbUser));
-            window.location.href = 'dashboard.html';
-        } else {
-            localStorage.removeItem('currentUser');
-        }
-        return;
-    }
-    
     if (!currentUser && (isDashboardPage || isSubjectsPage)) {
         window.location.href = 'index.html';
         return;
     }
     
-    if (isDashboardPage) {
-        if (!currentUser) {
-            window.location.href = 'index.html';
-            return;
-        }
-        
+    if (currentUser && isLoginPage) {
+        window.location.href = 'dashboard.html';
+        return;
+    }
+    
+    if (isDashboardPage && currentUser) {
         try {
             const fbUser = await getUserFromFirebase(currentUser.username);
             if (fbUser) {
@@ -606,6 +595,7 @@ function setTheme(mode) {
     const textElements = document.querySelectorAll('.stat-label, .progress-numbers, .subjects-label, #message');
     const subjectTags = document.querySelectorAll('.subject-tag');
     const popupContents = document.querySelectorAll('.popup-content');
+    const chartLegend = document.querySelectorAll('.chart-container-big canvas + *');
     
     if (mode === 'light') {
         if (navBar) {
@@ -633,6 +623,11 @@ function setTheme(mode) {
         popupContents.forEach(el => {
             if (el) el.style.backgroundColor = '#ffffff';
         });
+        
+        if (creditChart) {
+            creditChart.options.plugins.legend.labels.color = '#2c3e50';
+            creditChart.update();
+        }
         
         if (!localStorage.getItem('gradientColor1')) {
             document.body.style.background = 'linear-gradient(135deg, #9b59b6 0%, #3498db 100%)';
@@ -670,6 +665,11 @@ function setTheme(mode) {
             if (el) el.style.backgroundColor = darkSecondary;
         });
         
+        if (creditChart) {
+            creditChart.options.plugins.legend.labels.color = '#ffffff';
+            creditChart.update();
+        }
+        
         if (!localStorage.getItem('gradientColor1')) {
             document.body.style.background = darkBg;
         }
@@ -694,19 +694,6 @@ function loadSavedTheme() {
     } else {
         setTheme('light');
     }
-}
-
-async function saveSettings() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    
-    currentUser.creditGoal = parseInt(document.getElementById('settings-credit-goal').value);
-    currentUser.endorsementGoal = document.getElementById('settings-endorsement-goal').value;
-    
-    await saveUserToFirebase(currentUser);
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    
-    loadCredits();
-    closeSettings();
 }
 
 if (window.location.pathname.includes('subjects.html')) {
