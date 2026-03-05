@@ -28,6 +28,7 @@ function logout() {
 }
 
 async function addCredit() {
+
     const subject = document.getElementById('subject-select').value;
     const credits = parseInt(document.getElementById('credit-amount').value);
     const grade = document.getElementById('grade-select').value;
@@ -55,8 +56,8 @@ async function addCredit() {
     
     hideAddCreditPopup();
     showSuccessPopup(credits, grade, subject);
-    loadCredits();
-    loadSubjectsOnDashboard();
+    loadCredits(currentUser);
+    loadSubjectsOnDashboard(currentUser);
 }
 
 function showSuccessPopup(credits, grade, subject) {
@@ -125,18 +126,17 @@ function displaySubjects() {
     container.innerHTML = html;
 }
 
-function loadSubjectsOnDashboard() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+function loadSubjectsOnDashboard(userData) {
     const subjectsDisplay = document.getElementById('subjects-display');
     
-    if (!currentUser || !subjectsDisplay) return;
+    if (!userData || !subjectsDisplay) return;
     
-    if (currentUser.subjects && currentUser.subjects.length > 0) {
+    if (userData.subjects && userData.subjects.length > 0) {
         let html = '';
         
         const subjectCredits = {};
-        if (currentUser.credits && currentUser.credits.length > 0) {
-            currentUser.credits.forEach(credit => {
+        if (userData.credits && userData.credits.length > 0) {
+            userData.credits.forEach(credit => {
                 if (!subjectCredits[credit.subject]) {
                     subjectCredits[credit.subject] = 0;
                 }
@@ -144,7 +144,7 @@ function loadSubjectsOnDashboard() {
             });
         }
         
-        currentUser.subjects.forEach(subject => {
+        userData.subjects.forEach(subject => {
             const credits = subjectCredits[subject] || 0;
             html += `<div class="subject-tag">${subject} <span class="subject-credit-count">${credits}</span></div>`;
         });
@@ -155,16 +155,15 @@ function loadSubjectsOnDashboard() {
     }
 }
 
-function loadCredits() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+function loadCredits(userData) {
     const currentCreditsSpan = document.getElementById('current-credits');
     const goalSpan = document.getElementById('goal-credits');
     const progressBar = document.getElementById('credit-progress');
     
-    if (!currentUser || !currentCreditsSpan || !progressBar) return;
+    if (!userData || !currentCreditsSpan || !progressBar) return;
     
-    if (!currentUser.credits) {
-        currentUser.credits = [];
+    if (!userData.credits) {
+        userData.credits = [];
     }
     
     let total = 0;
@@ -173,8 +172,8 @@ function loadCredits() {
     let meritTotal = 0;
     let excellenceTotal = 0;
     
-    for (let i = 0; i < currentUser.credits.length; i++) {
-        const credit = currentUser.credits[i];
+    for (let i = 0; i < userData.credits.length; i++) {
+        const credit = userData.credits[i];
         total += credit.credits;
         
         if (credit.grade === "Literacy") literacyTotal += credit.credits;
@@ -221,12 +220,7 @@ function loadCredits() {
         progressBar.style.background = '#ecf0f1';
     }
     
-    createOrUpdateChart();
-    
-    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
-    allUsers[currentUser.username] = currentUser;
-    localStorage.setItem('allUsers', JSON.stringify(allUsers));
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    createOrUpdateChart(userData);
 
     document.getElementById('excellence-total').textContent = excellenceTotal;
     document.getElementById('merit-total').textContent = meritTotal;
@@ -238,12 +232,11 @@ function toggleSubject(element) {
     element.classList.toggle('selected');
 }
 
-function loadDashboardUser() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+function loadDashboardUser(userData) {
     const usernameDisplay = document.getElementById('username-display');
     
-    if (currentUser && usernameDisplay) {
-        const name = currentUser.username;
+    if (userData && usernameDisplay) {
+        const name = userData.username;
         const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
         usernameDisplay.textContent = formattedName;
     }
@@ -304,21 +297,36 @@ document.addEventListener('DOMContentLoaded', async function() {
         } else {
             localStorage.removeItem('currentUser');
         }
+        return;
     }
     
     if (!currentUser && (isDashboardPage || isSubjectsPage)) {
         window.location.href = 'index.html';
+        return;
     }
     
     if (isDashboardPage && currentUser) {
-        const fbUser = await getUserFromFirebase(currentUser.username);
-        if (fbUser) {
-            localStorage.setItem('currentUser', JSON.stringify(fbUser));
-            loadDashboardUser();
-            loadSubjectsOnDashboard();
-            loadCredits();
-            createOrUpdateChart();
+        console.log('Loading dashboard for:', currentUser.username);
+        
+        let userData = currentUser;
+        
+        try {
+            const fbUser = await getUserFromFirebase(currentUser.username);
+            if (fbUser) {
+                userData = fbUser;
+                localStorage.setItem('currentUser', JSON.stringify(fbUser));
+                console.log('Got user from Firebase:', fbUser);
+            }
+        } catch (error) {
+            console.log('Using localStorage user data');
         }
+        
+        setTimeout(() => {
+            loadDashboardUser(userData);
+            loadSubjectsOnDashboard(userData);
+            loadCredits(userData);
+            createOrUpdateChart(userData);
+        }, 100);
     }
     
     if (isSubjectsPage) {
@@ -403,18 +411,17 @@ async function getUserFromFirebase(username) {
     }
 }
 
-function createOrUpdateChart() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+function createOrUpdateChart(userData) {
     const ctx = document.getElementById('credit-chart')?.getContext('2d');
     
-    if (!currentUser || !currentUser.credits || !ctx) return;
+    if (!userData || !userData.credits || !ctx) return;
     
     let achieved = 0;
     let merit = 0;
     let excellence = 0;
     let literacy = 0;
     
-    currentUser.credits.forEach(credit => {
+    userData.credits.forEach(credit => {
         if (credit.grade === "Achieved") achieved += credit.credits;
         else if (credit.grade === "Merit") merit += credit.credits;
         else if (credit.grade === "Excellence") excellence += credit.credits;
@@ -440,18 +447,7 @@ function createOrUpdateChart() {
             responsive: true,
             maintainAspectRatio: true,
             plugins: {
-                legend: { position: 'bottom' },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.raw || 0;
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-                            return `${label}: ${value} credits (${percentage}%)`;
-                        }
-                    }
-                }
+                legend: { position: 'bottom' }
             }
         }
     });
@@ -592,14 +588,90 @@ function applyGradient() {
 }
 
 function setTheme(mode) {
+    const navBar = document.querySelector('.nav-bar');
+    const subjectsStrip = document.querySelector('.subjects-strip');
+    const userSection = document.querySelector('.user-section');
+    const settingsBtn = document.querySelector('.btn-settings');
+    const progressContainer = document.querySelectorAll('.progress-container, .stats-container, .chart-container-big');
+    const textElements = document.querySelectorAll('.stat-label, .progress-numbers, .subjects-label');
+    const subjectTags = document.querySelectorAll('.subject-tag');
+    
     if (mode === 'light') {
-        document.body.style.background = '#f5f5f5';
-        document.body.style.color = '#2c3e50';
+
+        if (navBar) {
+            navBar.style.backgroundColor = '#ffffff';
+            navBar.style.color = '#2c3e50';
+            navBar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+        }
+        if (subjectsStrip) {
+            subjectsStrip.style.backgroundColor = '#ffffff';
+            subjectsStrip.style.color = '#2c3e50';
+        }
+        if (userSection) userSection.style.background = 'rgba(155, 89, 182, 0.1)';
+        if (settingsBtn) settingsBtn.style.color = '#2c3e50';
+        
+        progressContainer.forEach(el => {
+            if (el) {
+                el.style.backgroundColor = '#ffffff';
+                el.style.color = '#2c3e50';
+            }
+        });
+        
+        textElements.forEach(el => {
+            if (el) el.style.color = '#2c3e50';
+        });
+        
+        subjectTags.forEach(el => {
+            if (el) {
+                el.style.background = 'linear-gradient(135deg, #9b59b6, #3498db)';
+                el.style.color = '#ffffff';
+            }
+        });
+        
+
+        if (!localStorage.getItem('gradientColor1')) {
+            document.body.style.background = 'linear-gradient(135deg, #9b59b6 0%, #3498db 100%)';
+        }
+        
+        localStorage.setItem('theme', 'light');
     } else {
-        document.body.style.background = '#1a1a2e';
-        document.body.style.color = '#ffffff';
+
+        if (navBar) {
+            navBar.style.backgroundColor = '#1a1a2e';
+            navBar.style.color = '#ffffff';
+            navBar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+        }
+        if (subjectsStrip) {
+            subjectsStrip.style.backgroundColor = '#16213e';
+            subjectsStrip.style.color = '#ecf0f1';
+        }
+        if (userSection) userSection.style.background = 'rgba(255,255,255,0.1)';
+        if (settingsBtn) settingsBtn.style.color = '#ffffff';
+        
+        progressContainer.forEach(el => {
+            if (el) {
+                el.style.backgroundColor = '#0f3460';
+                el.style.color = '#ffffff';
+            }
+        });
+        
+        textElements.forEach(el => {
+            if (el) el.style.color = '#ecf0f1';
+        });
+        
+        subjectTags.forEach(el => {
+            if (el) {
+                el.style.background = 'linear-gradient(135deg, #6c3483, #2874a6)';
+                el.style.color = '#ffffff';
+            }
+        });
+        
+        if (!localStorage.getItem('gradientColor1')) {
+            document.body.style.background = '#1a1a2e';
+        }
+        
+        localStorage.setItem('theme', 'dark');
     }
-    localStorage.setItem('theme', mode);
 }
 
 function loadSavedTheme() {
@@ -609,10 +681,15 @@ function loadSavedTheme() {
     
     if (savedColor1 && savedColor2) {
         document.body.style.background = `linear-gradient(135deg, ${savedColor1}, ${savedColor2})`;
+    } else {
+        document.body.style.background = 'linear-gradient(135deg, #9b59b6 0%, #3498db 100%)';
     }
     
-    if (savedTheme === 'dark') setTheme('dark');
-    else if (savedTheme === 'light') setTheme('light');
+    if (savedTheme === 'dark') {
+        setTheme('dark');
+    } else {
+        setTheme('light');
+    }
 }
 
 async function saveSettings() {
