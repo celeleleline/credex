@@ -1,30 +1,23 @@
 general {
     fix the horrendous positioning of everything
-    -specifically the add new credits button
 }
 
 fix it {
-    fix the menu that doesnt pop up when you add credits
-    pi chart is not there
+
 }
 
 things {
     also code the forgot password function + CSS
     a help page obviously :(
-    the 'your subjects' looks ass
     -CHANGE THE USERNAME AND PASSWORD TO EMAIL SO IT EMAILS YOU INSTEAD.
 }
 
 settings {
-    you can change the background color yourself
-    dark or light mode
     maybe do an email function is everything works fine? well see
 
     add or remove subjects
     
 }
-
-
 
 
 firebase? {
@@ -49,3 +42,8 @@ const app = initializeApp(firebaseConfig);
 
 
 }
+
+when choosing the year level, have a set for year 12 year 11 and year 13 eg science extension is exclusively only for year 11
+
+
+alright the main problem right now is that when 

@@ -4,61 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>CREDEX - Subjects</title>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBa9BtvZCXTG7W7cgj8_i0q2IuYgU_sYEg",
-            authDomain: "credex-653f1.firebaseapp.com",
-            projectId: "credex-653f1",
-            storageBucket: "credex-653f1.firebasestorage.app",
-            messagingSenderId: "1022903146029",
-            appId: "1:1022903146029:web:57bf20bd079409838ccaa4"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-    </script>
+    <title>CREDEX - Setup</title>
 </head>
 <body>
-    
     <div class="nav-bar">
         <div class="nav-left">
             <h1>CREDEX</h1>
         </div>
     </div>
 
-    <div class="titles">
-        <h1>Welcome to CREDEX!</h1>
-        <p>Set up</p>
+    <div class="setup-container">
+        <div class="setup-card">
+            <h1>Welcome to CREDEX!</h1>
+            <p>Let's get you set up</p>
+            
+            <div class="setup-section">
+                <h3>Your Year Level</h3>
+                <select id="year-level" class="setup-select">
+                    <option value="11">Year 11 (Level 1)</option>
+                    <option value="12">Year 12 (Level 2)</option>
+                    <option value="13" selected>Year 13 (Level 3)</option>
+                </select>
+            </div>
 
-        <div class="level-section">
-            <h2>Year Level</h2>
-            <select id="year-level" class="level-select">
-                <option value="11">Year 11 (Level 1)</option>
-                <option value="12">Year 12 (Level 2)</option>
-                <option value="13" selected>Year 13 (Level 3)</option>
-            </select>
+            <div class="setup-section">
+                <h3>Literacy & Numeracy</h3>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="literacy-numeracy"> 
+                    I have already earned my 20 Literacy/Numeracy credits
+                </label>
+            </div>
+
+            <div class="setup-section">
+                <h3>Select Your Subjects</h3>
+                <div class="subjects-grid" id="subjects">
+                    <!-- Subjects will be loaded here -->
+                </div>
+            </div>
+
+            <button type="button" onclick="saveSubjectsAndGoToDashboard()" class="setup-btn">
+                Start Tracking!
+            </button>
         </div>
-
-        <div class="literacy-section">
-            <h2>Literacy & Numeracy</h2>
-            <label class="checkbox-label">
-                <input type="checkbox" id="literacy-numeracy"> 
-                I have already earned my 20 Literacy/Numeracy credits
-            </label>
-        </div>
-
-        <h2>Select Your NCEA Subjects:</h2>
-        <div class="subjects" id="subjects">
-            <!-- Subjects will be loaded here by JavaScript -->
-        </div>
-
-        <button onclick="saveSubjectsAndGoToDashboard()" class="start-btn">Start Tracking!</button>
     </div>
 
     <script src="script.js"></script>
-
 </body>
 </html>

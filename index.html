@@ -7,7 +7,7 @@
     <title>CREDEX - Login</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-        <script>
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBa9BtvZCXTG7W7cgj8_i0q2IuYgU_sYEg",
             authDomain: "credex-653f1.firebaseapp.com",
@@ -19,7 +19,7 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        </script>
+    </script>
 </head>
 <body>
 
@@ -36,14 +36,13 @@
         <div class="login-form">
             <input type="text" id="username" placeholder="Username">
             <input type="password" id="password" placeholder="Password">
-            <a href="#" id="forgot-password">Forgot Password?</a> <!--CSS PLEASE-->
+            <a href="#" id="forgot-password">Forgot Password?</a>
             
             <div class="buttons">
-                <button onclick="login()"; class="btn-primary">Login</button>
-                <button onclick="signup()"; class="btn-secondary">Sign up</button>
+                <button onclick="login()" class="btn-primary">Login</button>
+                <button onclick="signup()" class="btn-secondary">Sign up</button>
             </div>
         </div>
-
     </div>
 
     <script src="script.js"></script>
