@@ -24,6 +24,12 @@ function goToLogin() {
 
 function logout() {
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('gradientColor1');
+    localStorage.removeItem('gradientColor2');
+    localStorage.removeItem('theme');
+    
+    document.body.style.background = 'linear-gradient(135deg, #9b59b6 0%, #3498db 100%)';
+    
     goToLogin();
 }
 
@@ -305,28 +311,32 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
     
-    if (isDashboardPage && currentUser) {
-        console.log('Loading dashboard for:', currentUser.username);
-        
-        let userData = currentUser;
+    if (isDashboardPage) {
+        if (!currentUser) {
+            window.location.href = 'index.html';
+            return;
+        }
         
         try {
             const fbUser = await getUserFromFirebase(currentUser.username);
             if (fbUser) {
-                userData = fbUser;
                 localStorage.setItem('currentUser', JSON.stringify(fbUser));
-                console.log('Got user from Firebase:', fbUser);
+                loadDashboardUser(fbUser);
+                loadSubjectsOnDashboard(fbUser);
+                loadCredits(fbUser);
+                createOrUpdateChart(fbUser);
+            } else {
+                loadDashboardUser(currentUser);
+                loadSubjectsOnDashboard(currentUser);
+                loadCredits(currentUser);
+                createOrUpdateChart(currentUser);
             }
         } catch (error) {
-            console.log('Using localStorage user data');
+            loadDashboardUser(currentUser);
+            loadSubjectsOnDashboard(currentUser);
+            loadCredits(currentUser);
+            createOrUpdateChart(currentUser);
         }
-        
-        setTimeout(() => {
-            loadDashboardUser(userData);
-            loadSubjectsOnDashboard(userData);
-            loadCredits(userData);
-            createOrUpdateChart(userData);
-        }, 100);
     }
     
     if (isSubjectsPage) {
@@ -592,16 +602,15 @@ function setTheme(mode) {
     const subjectsStrip = document.querySelector('.subjects-strip');
     const userSection = document.querySelector('.user-section');
     const settingsBtn = document.querySelector('.btn-settings');
-    const progressContainer = document.querySelectorAll('.progress-container, .stats-container, .chart-container-big');
-    const textElements = document.querySelectorAll('.stat-label, .progress-numbers, .subjects-label');
+    const progressContainers = document.querySelectorAll('.progress-container, .stats-container, .chart-container-big');
+    const textElements = document.querySelectorAll('.stat-label, .progress-numbers, .subjects-label, #message');
     const subjectTags = document.querySelectorAll('.subject-tag');
+    const popupContents = document.querySelectorAll('.popup-content');
     
     if (mode === 'light') {
-
         if (navBar) {
             navBar.style.backgroundColor = '#ffffff';
             navBar.style.color = '#2c3e50';
-            navBar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
         }
         if (subjectsStrip) {
             subjectsStrip.style.backgroundColor = '#ffffff';
@@ -610,7 +619,7 @@ function setTheme(mode) {
         if (userSection) userSection.style.background = 'rgba(155, 89, 182, 0.1)';
         if (settingsBtn) settingsBtn.style.color = '#2c3e50';
         
-        progressContainer.forEach(el => {
+        progressContainers.forEach(el => {
             if (el) {
                 el.style.backgroundColor = '#ffffff';
                 el.style.color = '#2c3e50';
@@ -621,53 +630,48 @@ function setTheme(mode) {
             if (el) el.style.color = '#2c3e50';
         });
         
-        subjectTags.forEach(el => {
-            if (el) {
-                el.style.background = 'linear-gradient(135deg, #9b59b6, #3498db)';
-                el.style.color = '#ffffff';
-            }
+        popupContents.forEach(el => {
+            if (el) el.style.backgroundColor = '#ffffff';
         });
         
-
         if (!localStorage.getItem('gradientColor1')) {
             document.body.style.background = 'linear-gradient(135deg, #9b59b6 0%, #3498db 100%)';
         }
         
         localStorage.setItem('theme', 'light');
     } else {
-
+        const darkBg = '#1a1a2e';
+        const darkSecondary = '#16213e';
+        const darkText = '#ffffff';
+        
         if (navBar) {
-            navBar.style.backgroundColor = '#1a1a2e';
-            navBar.style.color = '#ffffff';
-            navBar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+            navBar.style.backgroundColor = darkSecondary;
+            navBar.style.color = darkText;
         }
         if (subjectsStrip) {
-            subjectsStrip.style.backgroundColor = '#16213e';
-            subjectsStrip.style.color = '#ecf0f1';
+            subjectsStrip.style.backgroundColor = darkSecondary;
+            subjectsStrip.style.color = darkText;
         }
         if (userSection) userSection.style.background = 'rgba(255,255,255,0.1)';
-        if (settingsBtn) settingsBtn.style.color = '#ffffff';
+        if (settingsBtn) settingsBtn.style.color = darkText;
         
-        progressContainer.forEach(el => {
+        progressContainers.forEach(el => {
             if (el) {
-                el.style.backgroundColor = '#0f3460';
-                el.style.color = '#ffffff';
+                el.style.backgroundColor = darkSecondary;
+                el.style.color = darkText;
             }
         });
         
         textElements.forEach(el => {
-            if (el) el.style.color = '#ecf0f1';
+            if (el) el.style.color = darkText;
         });
         
-        subjectTags.forEach(el => {
-            if (el) {
-                el.style.background = 'linear-gradient(135deg, #6c3483, #2874a6)';
-                el.style.color = '#ffffff';
-            }
+        popupContents.forEach(el => {
+            if (el) el.style.backgroundColor = darkSecondary;
         });
         
         if (!localStorage.getItem('gradientColor1')) {
-            document.body.style.background = '#1a1a2e';
+            document.body.style.background = darkBg;
         }
         
         localStorage.setItem('theme', 'dark');
