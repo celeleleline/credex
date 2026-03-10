@@ -424,10 +424,6 @@ async function login() {
     localStorage.setItem('currentUser', JSON.stringify(user));
     window.location.href = 'dashboard.html';
 }
-    
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    window.location.href = 'dashboard.html';
-}
 
 async function saveUserToFirebase(userData) {
     try {
