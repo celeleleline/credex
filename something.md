@@ -19,6 +19,10 @@ settings {
     
 }
 
+encrpyt the whatevers
+do a survey thingy for feedback, like google form i guess
+
+
 
 firebase? {
 
@@ -44,6 +48,3 @@ const app = initializeApp(firebaseConfig);
 }
 
 when choosing the year level, have a set for year 12 year 11 and year 13 eg science extension is exclusively only for year 11
-
-
-alright the main problem right now is that when i load into the website. no credits or anything shows up, only AFTER i add or subtract credits does the entire wheel and subject appear. please fix. Also with the settings button, dont make it move, and with the welcome [USERNAME], currently it only says welcome [user] not welcome [celine]. also the settings, the light and dark mode is for the nav bar at the top and the icons and stuff, instead of white its a darker gray ish color. so light and dark mode. also since the page is stuck, like you cant scroll, the settings menu you cant scroll either

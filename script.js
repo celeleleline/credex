@@ -188,7 +188,7 @@ function loadCredits(userData) {
         else if (credit.grade === "Excellence") excellenceTotal += credit.credits;
     }
     
-    const goal = 60;
+    const goal = 80;
     currentCreditsSpan.textContent = total;
     if (goalSpan) goalSpan.textContent = goal;
     
@@ -355,10 +355,10 @@ async function signup() {
         createdAt: new Date().toISOString(),
         subjects: [],
         credits: [],
-        creditGoal: 60,
+        creditGoal: 80,
         endorsementGoal: 'Excellence',
         yearLevel: '12',
-        hasLiteracyNumeracy: false
+        hasLiteracyNumeracy: true
     };
     
     await saveUserToFirebase(newUser);
@@ -563,7 +563,7 @@ function showSettings() {
     const savedColor2 = localStorage.getItem('gradientColor2') || '#3498db';
     
     if (currentUser) {
-        document.getElementById('settings-credit-goal').value = currentUser.creditGoal || 60;
+        document.getElementById('settings-credit-goal').value = currentUser.creditGoal || 80;
         document.getElementById('settings-endorsement-goal').value = currentUser.endorsementGoal || 'Excellence';
     }
     
