@@ -369,11 +369,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 async function signup() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const securityQuestion = document.getElementById('security-question').value;
-    const securityAnswer = document.getElementById('security-answer').value;
     
-    if (!username || !password || !securityQuestion || !securityAnswer) {
-        alert('Please fill all fields!');
+    if (!username || !password) {
+        alert('Please enter a username and password!');
         return;
     }
     
@@ -389,8 +387,6 @@ async function signup() {
     const newUser = {
         username: username,
         password: hashedPassword,
-        securityQuestion: securityQuestion,
-        securityAnswer: securityAnswer.toLowerCase().trim(),
         createdAt: new Date().toISOString(),
         subjects: [],
         credits: [],
@@ -754,6 +750,11 @@ async function checkSecurityAnswer() {
     
     if (!user) {
         alert('Username not found!');
+        return;
+    }
+    
+    if (!user.securityQuestion) {
+        alert('This account does not have a security question set. Please contact support.');
         return;
     }
     
