@@ -35,6 +35,11 @@
                     </div>
                 </div>
 
+                <div class="endorsement-text">
+                    <div id="pass-status">20 credits to pass the year</div>
+                    <div id="endorsement-status">24 credits until Excellence endorsement</div>
+                </div>
+
                 <div class="stats-container">
                     <div class="stat-row excellence-row">
                         <span class="stat-label">Excellence</span>
@@ -136,7 +141,6 @@
             <input type="color" id="gradient-color1" value="#9b59b6">
             <label>Color 2:</label>
             <input type="color" id="gradient-color2" value="#3498db">
-            <button onclick="applyGradient()" class="settings-btn">Apply Gradient</button>
         </div>
         
         <div class="settings-section">
@@ -146,14 +150,8 @@
         </div>
         
         <div class="settings-section">
-            <h3>Credit Goal</h3>
-            <input type="number" id="settings-credit-goal" value="60" min="1" max="100">
-        </div>
-        
-        <div class="settings-section">
             <h3>Endorsement Goal</h3>
             <select id="settings-endorsement-goal">
-                <option value="Achieved">Achieved</option>
                 <option value="Merit">Merit</option>
                 <option value="Excellence">Excellence</option>
             </select>
@@ -164,8 +162,8 @@
             <button onclick="logout()" class="logout-settings-btn">Logout</button>
         </div>
         
-        <div class="popup-buttons" style="margin-top: 20px;">
-            <button onclick="closeSettings()" style="width: 100%;">Close</button>
+        <div class="popup-buttons">
+            <button onclick="saveAndCloseSettings()">Close</button>
         </div>
     </div>
 </div>

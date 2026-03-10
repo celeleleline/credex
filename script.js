@@ -171,7 +171,7 @@ function loadCredits(userData) {
     if (!userData.credits) {
         userData.credits = [];
     }
-    
+
     let total = 0;
     let literacyTotal = 0;
     let achievedTotal = 0;
@@ -226,6 +226,31 @@ function loadCredits(userData) {
         progressBar.style.background = '#ecf0f1';
     }
     
+    const passRemaining = Math.max(0, 60 - total);
+    document.getElementById('pass-status').textContent = `${passRemaining} credits to pass the year`;
+    
+    let meritExcellenceTotal = 0;
+    userData.credits.forEach(credit => {
+        if (credit.grade === "Merit" || credit.grade === "Excellence") {
+            meritExcellenceTotal += credit.credits;
+        }
+    });
+    
+    const endorsementRemaining = Math.max(0, 50 - meritExcellenceTotal);
+    let endorsementType = 'Merit';
+    
+    if (userData.endorsementGoal === 'Excellence') {
+        const excellenceTotal = userData.credits
+            .filter(c => c.grade === "Excellence")
+            .reduce((sum, c) => sum + c.credits, 0);
+        const excellenceRemaining = Math.max(0, 50 - excellenceTotal);
+        document.getElementById('endorsement-status').textContent = 
+            `${excellenceRemaining} credits until Excellence endorsement`;
+    } else {
+        document.getElementById('endorsement-status').textContent = 
+            `${endorsementRemaining} credits until ${userData.endorsementGoal} endorsement`;
+    }
+
     document.getElementById('excellence-total').textContent = excellenceTotal;
     document.getElementById('merit-total').textContent = meritTotal;
     document.getElementById('achieved-total').textContent = achievedTotal;
@@ -336,29 +361,35 @@ document.addEventListener('DOMContentLoaded', async function() {
 async function signup() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const securityQuestion = document.getElementById('security-question').value;
+    const securityAnswer = document.getElementById('security-answer').value;
     
-    if (!username || !password) {
-        alert('Please enter a username and password!');
+    if (!username || !password || !securityQuestion || !securityAnswer) {
+        alert('Please fill all fields!');
         return;
     }
     
     const existingUser = await getUserFromFirebase(username);
     
     if (existingUser) {
-        alert('Username already exists! Please choose another one.');
+        alert('Username already exists!');
         return;
     }
     
+    const hashedPassword = await hashPassword(password);
+    
     const newUser = {
         username: username,
-        password: password,
+        password: hashedPassword,
+        securityQuestion: securityQuestion,
+        securityAnswer: securityAnswer.toLowerCase().trim(),
         createdAt: new Date().toISOString(),
         subjects: [],
         credits: [],
         creditGoal: 80,
         endorsementGoal: 'Excellence',
         yearLevel: '12',
-        hasLiteracyNumeracy: true
+        hasLiteracyNumeracy: false
     };
     
     await saveUserToFirebase(newUser);
@@ -383,10 +414,16 @@ async function login() {
         return;
     }
     
-    if (user.password !== password) {
+    const hashedInput = await hashPassword(password);
+
+    if (user.password !== hashedInput) {
         alert('Incorrect password!');
         return;
     }
+    
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    window.location.href = 'dashboard.html';
+}
     
     localStorage.setItem('currentUser', JSON.stringify(user));
     window.location.href = 'dashboard.html';
@@ -576,16 +613,6 @@ function closeSettings() {
     document.getElementById('settings-popup').style.display = 'none';
 }
 
-function applyGradient() {
-    const color1 = document.getElementById('gradient-color1').value;
-    const color2 = document.getElementById('gradient-color2').value;
-    
-    document.body.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
-    
-    localStorage.setItem('gradientColor1', color1);
-    localStorage.setItem('gradientColor2', color2);
-}
-
 function setTheme(mode) {
     const navBar = document.querySelector('.nav-bar');
     const subjectsStrip = document.querySelector('.subjects-strip');
@@ -698,4 +725,84 @@ function loadSavedTheme() {
 
 if (window.location.pathname.includes('subjects.html')) {
     displaySubjects();
+}
+
+function showForgotPassword() {
+    document.getElementById('forgot-password-popup').style.display = 'flex';
+    document.getElementById('new-password-section').style.display = 'none';
+    document.getElementById('reset-password-btn').style.display = 'none';
+    document.getElementById('check-answer-btn').style.display = 'block';
+}
+
+function closeForgotPassword() {
+    document.getElementById('forgot-password-popup').style.display = 'none';
+}
+
+async function checkSecurityAnswer() {
+    const username = document.getElementById('reset-username').value;
+    const answer = document.getElementById('reset-answer').value.toLowerCase().trim();
+    
+    const user = await getUserFromFirebase(username);
+    
+    if (!user) {
+        alert('Username not found!');
+        return;
+    }
+    
+    document.getElementById('security-question-display').textContent = user.securityQuestion;
+    
+    if (user.securityAnswer === answer) {
+        document.getElementById('new-password-section').style.display = 'block';
+        document.getElementById('reset-password-btn').style.display = 'block';
+        document.getElementById('check-answer-btn').style.display = 'none';
+        document.getElementById('reset-answer').disabled = true;
+    } else {
+        alert('Incorrect answer!');
+    }
+}
+
+async function resetPassword() {
+    const username = document.getElementById('reset-username').value;
+    const newPassword = document.getElementById('new-password').value;
+    
+    if (!newPassword) {
+        alert('Enter a new password!');
+        return;
+    }
+    
+    const user = await getUserFromFirebase(username);
+    user.password = newPassword;
+    
+    await saveUserToFirebase(user);
+    alert('Password updated!');
+    closeForgotPassword();
+}
+
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+}
+
+function saveAndCloseSettings() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    
+    const color1 = document.getElementById('gradient-color1').value;
+    const color2 = document.getElementById('gradient-color2').value;
+    
+    document.body.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
+    localStorage.setItem('gradientColor1', color1);
+    localStorage.setItem('gradientColor2', color2);
+    
+    if (currentUser) {
+        currentUser.endorsementGoal = document.getElementById('settings-endorsement-goal').value;
+        saveUserToFirebase(currentUser);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        loadCredits(currentUser);
+    }
+    
+    document.getElementById('settings-popup').style.display = 'none';
 }

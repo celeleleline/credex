@@ -778,3 +778,18 @@ html, body {
     background: linear-gradient(135deg, #9b59b6, #3498db);
     border-radius: 10px;
 }
+
+.endorsement-text {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.endorsement-text div {
+    margin: 5px 0;
+    color: white;
+    font-weight: 500;
+}

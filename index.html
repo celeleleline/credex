@@ -36,7 +36,7 @@
         <div class="login-form">
             <input type="text" id="username" placeholder="Username">
             <input type="password" id="password" placeholder="Password">
-            <a href="#" id="forgot-password">Forgot Password?</a>
+            <a href="#" id="forgot-password" onclick="showForgotPassword(); return false;">Forgot Password?</a>
             
             <div class="buttons">
                 <button onclick="login()" class="btn-primary">Login</button>
@@ -44,6 +44,33 @@
             </div>
         </div>
     </div>
+
+    <div id="forgot-password-popup" class="popup-overlay">
+    <div class="popup-content">
+        <h2>Reset Password</h2>
+        
+        <div class="settings-section">
+            <label>Username:</label>
+            <input type="text" id="reset-username">
+        </div>
+        
+        <div class="settings-section">
+            <label id="security-question-display">Security Question</label>
+            <input type="text" id="reset-answer" placeholder="Your answer">
+        </div>
+        
+        <div class="settings-section" id="new-password-section" style="display: none;">
+            <label>New Password:</label>
+            <input type="password" id="new-password">
+        </div>
+        
+        <div class="popup-buttons">
+            <button onclick="checkSecurityAnswer()" id="check-answer-btn">Check Answer</button>
+            <button onclick="resetPassword()" id="reset-password-btn" style="display: none;">Reset Password</button>
+            <button onclick="closeForgotPassword()">Cancel</button>
+        </div>
+    </div>
+</div>
 
     <script src="script.js"></script>
 </body>
