@@ -367,44 +367,68 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 async function signup() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    console.log('Signup function called');
+    
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    
+    if (!usernameInput || !passwordInput) {
+        console.error('Could not find username or password input fields');
+        alert('Error: Login form not found. Please refresh the page.');
+        return;
+    }
+    
+    const username = usernameInput.value;
+    const password = passwordInput.value;
     
     if (!username || !password) {
         alert('Please enter a username and password!');
         return;
     }
     
-    const existingUser = await getUserFromFirebase(username);
-    
-    if (existingUser) {
-        alert('Username already exists!');
-        return;
+    try {
+        const existingUser = await getUserFromFirebase(username);
+        
+        if (existingUser) {
+            alert('Username already exists!');
+            return;
+        }
+        
+        const hashedPassword = await hashPassword(password);
+        
+        const newUser = {
+            username: username,
+            password: hashedPassword,
+            createdAt: new Date().toISOString(),
+            subjects: [],
+            credits: [],
+            creditGoal: 80,
+            endorsementGoal: 'Excellence',
+            yearLevel: '12',
+            hasLiteracyNumeracy: false
+        };
+        
+        await saveUserToFirebase(newUser);
+        localStorage.setItem('currentUser', JSON.stringify(newUser));
+        
+        window.location.href = 'subjects.html';
+    } catch (error) {
+        console.error('Signup error:', error);
+        alert('Error during signup: ' + error.message);
     }
-    
-    const hashedPassword = await hashPassword(password);
-    
-    const newUser = {
-        username: username,
-        password: hashedPassword,
-        createdAt: new Date().toISOString(),
-        subjects: [],
-        credits: [],
-        creditGoal: 80,
-        endorsementGoal: 'Excellence',
-        yearLevel: '12',
-        hasLiteracyNumeracy: false
-    };
-    
-    await saveUserToFirebase(newUser);
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    
-    window.location.href = 'subjects.html';
 }
 
 async function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    
+    if (!usernameInput || !passwordInput) {
+        alert('Error: Login form not found. Please refresh the page.');
+        return;
+    }
+    
+    const username = usernameInput.value;
+    const password = passwordInput.value;
     
     if (!username || !password) {
         alert('Please enter your username and password!');
