@@ -34,7 +34,6 @@ function logout() {
 }
 
 async function addCredit() {
-
     const subject = document.getElementById('subject-select').value;
     const credits = parseInt(document.getElementById('credit-amount').value);
     const grade = document.getElementById('grade-select').value;
@@ -165,6 +164,8 @@ function loadCredits(userData) {
     const currentCreditsSpan = document.getElementById('current-credits');
     const goalSpan = document.getElementById('goal-credits');
     const progressBar = document.getElementById('credit-progress');
+    const passStatus = document.getElementById('pass-status');
+    const endorsementStatus = document.getElementById('endorsement-status');
     
     if (!userData || !currentCreditsSpan || !progressBar) return;
     
@@ -226,8 +227,10 @@ function loadCredits(userData) {
         progressBar.style.background = '#ecf0f1';
     }
     
-    const passRemaining = Math.max(0, 60 - total);
-    document.getElementById('pass-status').textContent = `${passRemaining} credits to pass the year`;
+    if (passStatus) {
+        const passRemaining = Math.max(0, 60 - total);
+        passStatus.textContent = `${passRemaining} credits to pass the year`;
+    }
     
     let meritExcellenceTotal = 0;
     userData.credits.forEach(credit => {
@@ -237,24 +240,28 @@ function loadCredits(userData) {
     });
     
     const endorsementRemaining = Math.max(0, 50 - meritExcellenceTotal);
-    let endorsementType = 'Merit';
     
-    if (userData.endorsementGoal === 'Excellence') {
-        const excellenceTotal = userData.credits
-            .filter(c => c.grade === "Excellence")
-            .reduce((sum, c) => sum + c.credits, 0);
-        const excellenceRemaining = Math.max(0, 50 - excellenceTotal);
-        document.getElementById('endorsement-status').textContent = 
-            `${excellenceRemaining} credits until Excellence endorsement`;
-    } else {
-        document.getElementById('endorsement-status').textContent = 
-            `${endorsementRemaining} credits until ${userData.endorsementGoal} endorsement`;
+    if (endorsementStatus) {
+        if (userData.endorsementGoal === 'Excellence') {
+            const excellenceTotal = userData.credits
+                .filter(c => c.grade === "Excellence")
+                .reduce((sum, c) => sum + c.credits, 0);
+            const excellenceRemaining = Math.max(0, 50 - excellenceTotal);
+            endorsementStatus.textContent = `${excellenceRemaining} credits until Excellence endorsement`;
+        } else {
+            endorsementStatus.textContent = `${endorsementRemaining} credits until ${userData.endorsementGoal} endorsement`;
+        }
     }
 
-    document.getElementById('excellence-total').textContent = excellenceTotal;
-    document.getElementById('merit-total').textContent = meritTotal;
-    document.getElementById('achieved-total').textContent = achievedTotal;
-    document.getElementById('total-credits').textContent = total;
+    const excellenceEl = document.getElementById('excellence-total');
+    const meritEl = document.getElementById('merit-total');
+    const achievedEl = document.getElementById('achieved-total');
+    const totalEl = document.getElementById('total-credits');
+    
+    if (excellenceEl) excellenceEl.textContent = excellenceTotal;
+    if (meritEl) meritEl.textContent = meritTotal;
+    if (achievedEl) achievedEl.textContent = achievedTotal;
+    if (totalEl) totalEl.textContent = total;
     
     createOrUpdateChart(userData);
 }
@@ -346,6 +353,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 createOrUpdateChart(currentUser);
             }
         } catch (error) {
+            console.log('Error loading from Firebase, using local data', error);
             loadDashboardUser(currentUser);
             loadSubjectsOnDashboard(currentUser);
             loadCredits(currentUser);
@@ -562,9 +570,9 @@ async function subtractCredit() {
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
     
     hideSubtractCreditPopup();
-    loadCredits();
-    createOrUpdateChart();
-    loadSubjectsOnDashboard();
+    loadCredits(currentUser);
+    createOrUpdateChart(currentUser);
+    loadSubjectsOnDashboard(currentUser);
     
     showSubtractSuccessPopup(creditsToRemove, subject);
 }
@@ -596,12 +604,17 @@ function showSettings() {
     const savedColor2 = localStorage.getItem('gradientColor2') || '#3498db';
     
     if (currentUser) {
-        document.getElementById('settings-credit-goal').value = currentUser.creditGoal || 80;
-        document.getElementById('settings-endorsement-goal').value = currentUser.endorsementGoal || 'Excellence';
+        const creditGoalEl = document.getElementById('settings-credit-goal');
+        const endorsementGoalEl = document.getElementById('settings-endorsement-goal');
+        if (creditGoalEl) creditGoalEl.value = currentUser.creditGoal || 80;
+        if (endorsementGoalEl) endorsementGoalEl.value = currentUser.endorsementGoal || 'Excellence';
     }
     
-    document.getElementById('gradient-color1').value = savedColor1;
-    document.getElementById('gradient-color2').value = savedColor2;
+    const color1El = document.getElementById('gradient-color1');
+    const color2El = document.getElementById('gradient-color2');
+    if (color1El) color1El.value = savedColor1;
+    if (color2El) color2El.value = savedColor2;
+    
     document.getElementById('settings-popup').style.display = 'flex';
 }
 
@@ -618,7 +631,6 @@ function setTheme(mode) {
     const textElements = document.querySelectorAll('.stat-label, .progress-numbers, .subjects-label, #message');
     const subjectTags = document.querySelectorAll('.subject-tag');
     const popupContents = document.querySelectorAll('.popup-content');
-    const chartLegend = document.querySelectorAll('.chart-container-big canvas + *');
     
     if (mode === 'light') {
         if (navBar) {
