@@ -25,7 +25,11 @@
 
     <div class="nav-bar">
         <div class="nav-left">
-            <h1>CREDEX</h1>
+            <a href="index.html" style="text-decoration: none;"><h1>CREDEX</h1></a>
+        </div>
+        <div class="nav-right">
+            <button onclick="window.location.href='calculator.html'" class="nav-calc-btn">📊</button>
+            <button onclick="showSettings()" class="nav-settings-btn">⚙️</button>
         </div>
     </div>
 
@@ -46,28 +50,29 @@
     </div>
 
     <div id="forgot-password-popup" class="popup-overlay">
-    <div class="popup-content">
-        <h2>Reset Password</h2>
-        
-        <div class="settings-section">
-            <label>Username:</label>
-            <input type="text" id="reset-username">
+        <div class="popup-content" style="text-align: center;">
+            <h2>Forgot Password?</h2>
+            <div style="font-size: 48px; margin: 20px 0;">
+                <img src="https://i.pinimg.com/originals/5f/17/6a/5f176adeec9740da47aa0ec93a79e9c6.gif" width="100", height="100">
+            </div>
+            <h3 style="margin: 20px 0; color: #2c3e50;">too bad, i cant do anything rn</h3>
+            <div class="popup-buttons">
+                <button onclick="closeForgotPassword()" style="width: 100%;">Close</button>
+            </div>
         </div>
-        
-        <div class="settings-section">
-            <label id="security-question-display">Security Question</label>
-            <input type="text" id="reset-answer" placeholder="Your answer">
+    </div>
+
+<div class="help-button" onclick="showHelp()">
+    ?
+</div>
+
+<div id="help-popup" class="popup-overlay">
+    <div class="popup-content" style="text-align: center; max-width: 500px;">
+        <h2>Help & Instructions</h2>
+        <div id="help-content" style="margin: 20px 0; text-align: left; line-height: 1.6;">
         </div>
-        
-        <div class="settings-section" id="new-password-section" style="display: none;">
-            <label>New Password:</label>
-            <input type="password" id="new-password">
-        </div>
-        
         <div class="popup-buttons">
-            <button onclick="checkSecurityAnswer()" id="check-answer-btn">Check Answer</button>
-            <button onclick="resetPassword()" id="reset-password-btn" style="display: none;">Reset Password</button>
-            <button onclick="closeForgotPassword()">Cancel</button>
+            <button onclick="closeHelp()" style="width: 100%;">Got it!</button>
         </div>
     </div>
 </div>

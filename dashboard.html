@@ -8,24 +8,37 @@
     <title>CREDEX - Dashboard</title>
 </head>
 <body>
+
     <div class="nav-bar">
         <div class="nav-left">
-            <h1>CREDEX</h1>
+            <a href="index.html" style="text-decoration: none;"><h1>CREDEX</h1></a>
+        </div>
+        <div class="nav-right">
+            <button onclick="window.location.href='rank_score.html'" class="nav-calc-btn">📊</button>
+            <button onclick="showSettings()" class="nav-settings-btn">⚙️</button>
         </div>
     </div>
 
     <div class="dashboard-one-page">
-     
+
         <div class="top-row">
-            <div class="user-section">
-                <span id="message">Welcome, <span id="username-display">User</span>!</span>
-                <button onclick="showSettings()" class="btn-settings">⚙️</button>
+            <div></div>
+            <div class="welcome-message">
+                <span class="welcome-text">Welcome,</span>
+                <span class="welcome-username" id="username-display">User</span>
             </div>
         </div>
 
         <div class="dashboard-grid">
-            
+        
+
             <div class="left-column">
+                
+                <div class="progress-text">
+                    <div id="pass-status">20 credits to pass the year</div>
+                    <div id="endorsement-status">40 credits until Excellence endorsement</div>
+                </div>
+
                 <div class="progress-container">
                     <div class="progress-bar-bg">
                         <div class="progress-fill" id="credit-progress"></div>
@@ -33,11 +46,6 @@
                     <div class="progress-numbers">
                         <span id="current-credits">0</span> / <span id="goal-credits">60</span> credits
                     </div>
-                </div>
-
-                <div class="endorsement-text">
-                    <div id="pass-status">20 credits to pass the year</div>
-                    <div id="endorsement-status">24 credits until Excellence endorsement</div>
                 </div>
 
                 <div class="stats-container">
@@ -136,6 +144,18 @@
         <h2>Settings</h2>
         
         <div class="settings-section">
+            <h3>Your Subjects</h3>
+            <div id="settings-subjects-list" style="max-height: 150px; overflow-y: auto; margin-bottom: 10px; padding: 5px; border: 1px solid #ecf0f1; border-radius: 10px;">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <select id="settings-subject-select" style="flex: 1; padding: 8px; border: 2px solid #ecf0f1; border-radius: 10px;">
+                    <option value="">Add subject...</option>
+                </select>
+                <button onclick="addSubjectFromSettings()" style="padding: 8px 15px; background: #2ecc71; color: white; border: none; border-radius: 10px;">+</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
             <h3>Background Gradient</h3>
             <label>Color 1:</label>
             <input type="color" id="gradient-color1" value="#9b59b6">
@@ -146,7 +166,6 @@
         <div class="settings-section">
             <h3>Theme</h3>
             <button onclick="setTheme('light')" class="theme-btn light-btn">Light Mode</button>
-            <button onclick="setTheme('dark')" class="theme-btn dark-btn">Dark Mode</button>
         </div>
         
         <div class="settings-section">
@@ -175,6 +194,21 @@
             <div class="success-buttons">
                 <button onclick="addAnotherCredit()" class="btn-secondary">Add More</button>
                 <button onclick="closeSuccessPopup()" class="btn-primary">Back</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="help-button" onclick="showHelp()">
+        ?
+    </div>
+
+    <div id="help-popup" class="popup-overlay">
+        <div class="popup-content" style="text-align: center; max-width: 500px;">
+            <h2>Help & Instructions</h2>
+            <div id="help-content" style="margin: 20px 0; text-align: left; line-height: 1.6;">
+            </div>
+            <div class="popup-buttons">
+                <button onclick="closeHelp()" style="width: 100%;">Got it!</button>
             </div>
         </div>
     </div>

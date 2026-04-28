@@ -7,20 +7,25 @@
     <title>CREDEX - Setup</title>
 </head>
 <body>
+
     <div class="nav-bar">
         <div class="nav-left">
-            <h1>CREDEX</h1>
+            <a href="index.html" style="text-decoration: none;"><h1>CREDEX</h1></a>
+        </div>
+        <div class="nav-right">
+            <button onclick="window.location.href='rank_score.html'" class="nav-calc-btn">📊</button>
+            <button onclick="showSettings()" class="nav-settings-btn">⚙️</button>
         </div>
     </div>
 
     <div class="setup-container">
         <div class="setup-card">
             <h1>Welcome to CREDEX!</h1>
-            <p>Let's get you set up</p>
+            <p>time to setup 🤡</p>
             
             <div class="setup-section">
                 <h3>Your Year Level</h3>
-                <select id="year-level" class="setup-select">
+                <select id="year-level" class="setup-select" onchange="filterSubjectsByYear()">
                     <option value="11">Year 11 (Level 1)</option>
                     <option value="12">Year 12 (Level 2)</option>
                     <option value="13" selected>Year 13 (Level 3)</option>
@@ -37,14 +42,31 @@
 
             <div class="setup-section">
                 <h3>Select Your Subjects</h3>
+                <div class="search-container">
+                    <input type="text" id="subject-search" placeholder="🔍 Search subjects..." class="search-input">
+                </div>
                 <div class="subjects-grid" id="subjects">
-                    <!-- Subjects will be loaded here -->
                 </div>
             </div>
 
             <button type="button" onclick="saveSubjectsAndGoToDashboard()" class="setup-btn">
                 Start Tracking!
             </button>
+        </div>
+    </div>
+
+    <div class="help-button" onclick="showHelp()">
+        ?
+    </div>
+
+    <div id="help-popup" class="popup-overlay">
+        <div class="popup-content" style="text-align: center; max-width: 500px;">
+            <h2>Help & Instructions</h2>
+            <div id="help-content" style="margin: 20px 0; text-align: left; line-height: 1.6;">
+            </div>
+            <div class="popup-buttons">
+                <button onclick="closeHelp()" style="width: 100%;">Got it!</button>
+            </div>
         </div>
     </div>
 

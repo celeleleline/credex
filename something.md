@@ -14,14 +14,12 @@ things {
 
 settings {
     maybe do an email function is everything works fine? well see
-
-    add or remove subjects
-    
 }
 
 encrpyt the whatevers
 do a survey thingy for feedback, like google form i guess
 
+the maori heuristic thing, write M(aa)ori instead of just maori like  a white bitch
 
 
 firebase? {
@@ -47,4 +45,4 @@ const app = initializeApp(firebaseConfig);
 
 }
 
-when choosing the year level, have a set for year 12 year 11 and year 13 eg science extension is exclusively only for year 11
+
