@@ -49,4 +49,5 @@ const app = initializeApp(firebaseConfig);
 
 js in a separate page rather than the same one
 firebase
+hover over the subejcts on the bottom to see what credits are tehre, eg excellence?
 
