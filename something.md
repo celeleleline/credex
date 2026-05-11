@@ -21,6 +21,8 @@ do a survey thingy for feedback, like google form i guess
 
 the maori heuristic thing, write M(aa)ori instead of just maori like  a white bitch
 
+dr houliston said, to add ue subjects like maybe an indicator showing which ones can
+
 
 firebase? {
 
@@ -45,4 +47,6 @@ const app = initializeApp(firebaseConfig);
 
 }
 
+js in a separate page rather than the same one
+firebase
 

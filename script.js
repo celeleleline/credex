@@ -595,13 +595,13 @@ function showHelp() {
     
     let html = '';
     if (path.includes('index.html')) {
-        html = '<h3>Login Page</h3><ul><li><strong>Login:</strong> Enter username/password, click Login</li><li><strong>Sign Up:</strong> First time? Click Sign Up</li><li><strong>Forgot Password:</strong> Click the link (too bad!)</li></ul>';
+        html = '<h3>Login Page</h3><ul><li>Login: Enter username/password, click Login</li><li>Sign Up: First time? Click Sign Up</li><li>Forgot Password: Click the link (too bad!)</li></ul>';
     } else if (path.includes('subjects.html')) {
-        html = '<h3>Subject Selection</h3><ul><li><strong>Year Level:</strong> Select your year</li><li><strong>Search:</strong> Type to filter subjects</li><li><strong>Literacy Credits:</strong> Check if you have 20 already</li><li><strong>Choose Subjects:</strong> Click subjects to select</li><li><strong>Start Tracking:</strong> Click button when done</li></ul>';
+        html = '<h3>Subject Selection</h3><ul><li>Year Level: Select your year</li><li>Search: Type to filter subjects</li><li>Literacy Credits: Check if you have 20 already</li><li>Choose Subjects: Click subjects to select</li><li>Start Tracking: Click button when done</li></ul>';
     } else if (path.includes('dashboard.html')) {
-        html = '<h3>Dashboard</h3><ul><li><strong>Progress Bar:</strong> Shows total credits (80 to pass)</li><li><strong>Stats:</strong> Breakdown by grade</li><li><strong>Pie Chart:</strong> Visual representation</li><li><strong>Add Credits:</strong> + button</li><li><strong>Subtract Credits:</strong> - button</li><li><strong>Settings:</strong> Gear icon to customize</li></ul>';
+        html = '<h3>Dashboard</h3><ul><li>Progress Bar: Shows total credits (80 to pass)</li><li>Stats: Breakdown by grade</li><li>Pie Chart: Visual representation</li><li>Add Credits: + button</li><li>Subtract Credits: - button</li><li>Settings: Gear icon to customize</li></ul>';
     } else if (path.includes('rank_score.html')) {
-        html = '<h3>Rank Score</h3><ul><li><strong>Rank Score:</strong> Calculated from your credits</li><li><strong>Excellence = 4 points</strong></li><li><strong>Merit = 3 points</strong></li><li><strong>Achieved = 2 points</strong></li></ul>';
+        html = '<h3>Rank Score</h3><ul><li>Rank Score: Calculated from your credits</li><li>Excellence = 4 points</li><li>Merit = 3 points</li><li>Achieved = 2 points</li></ul>';
     }
     
     content.innerHTML = html;
